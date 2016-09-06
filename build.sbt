@@ -1,37 +1,16 @@
-lazy val pomDetails = <url>https://github.com/norbert-radyk/spoiwo/</url>
-  <licenses>
-    <license>
-      <name>MIT-License</name>
-      <url>http://www.opensource.org/licenses/mit-license.php</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  <scm>
-    <url>https://github.com/norbert-radyk/spoiwo</url>
-    <developerConnection>scm:git:git@github.com:norbert-radyk/spoiwo.git</developerConnection>
-    <connection>scm:git:git@github.com:norbert-radyk/spoiwo.git</connection>
-  </scm>
-  <developers>
-    <developer>
-      <id>rahul.kosambi</id>
-      <name>Rahul Kosambi</name>
-      <email>rahul.kosambi@flipkart.com</email>
-    </developer>
-  </developers>
-
 lazy val commonSettings = Seq(
   organization := "com.norbitltd",
   scalaVersion := "2.11.8",
   publishMavenStyle := true,
   publishArtifact in Test := false,
-  publishTo := {
-    val flipkart = "http://artifactory.nm.flipkart.com:8081/artifactory"
-    if (isSnapshot.value)
-      Some("snapshots" at flipkart + "/libs-snapshot")
+  publishTo in ThisBuild <<= version { (v: String) =>
+    val flipkartArtifactory = "http://artifactory.nm.flipkart.com:8081/artifactory/"
+    if (v.trim.endsWith("SNAPSHOT"))
+      Some("snapshots" at flipkartArtifactory + "libs-snapshots-local")
     else
-      Some("releases"  at flipkart + "/libs-snapshot")
+      Some("releases" at flipkartArtifactory + "libs-release-local")
   },
-  pomExtra := pomDetails,
+    publishArtifact in (Compile, packageDoc) in ThisBuild := false,
   libraryDependencies ++= Seq(
     "org.scala-lang.modules" %% "scala-xml"         % "1.0.5",
     "org.apache.poi"         %  "poi"               % "3.14",
@@ -46,7 +25,7 @@ lazy val spoiwo = (project in file("."))
   .settings(commonSettings : _*)
   .settings(
     name := "spoiwo",
-    version := "1.2.0"
+    version := "1.4.0"
   )
 
 lazy val examples = (project in file("examples"))
@@ -54,5 +33,5 @@ lazy val examples = (project in file("examples"))
   .settings(commonSettings : _*)
   .settings(
     name := "spoiwo-examples",
-    version := "1.2.0"
+    version := "1.4.0"
   )

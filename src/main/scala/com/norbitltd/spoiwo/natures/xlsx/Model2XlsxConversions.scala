@@ -260,7 +260,10 @@ object Model2XlsxConversions {
     validateTables(s)
     val sheetName = s.name.getOrElse("Sheet" + (workbook.getNumberOfSheets + 1))
     val sheet = workbook.createSheet(sheetName)
-    addValidation(s.dropDown.get, sheet)
+    if(s.dropDown.isDefined){
+      addValidation(s.dropDown.get, sheet)
+    }
+
     val columns = updateColumnsWithIndexes(s)
     val columnsMap = columns.map(c => c.index.get -> c).toMap
 
