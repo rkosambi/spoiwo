@@ -260,9 +260,9 @@ object Model2XlsxConversions {
     validateTables(s)
     val sheetName = s.name.getOrElse("Sheet" + (workbook.getNumberOfSheets + 1))
     val sheet = workbook.createSheet(sheetName)
-    if(s.dropDown.isDefined){
-      addValidation(s.dropDown.get, sheet)
-    }
+
+    addValidation(s.dropDowns, sheet)
+
 
     val columns = updateColumnsWithIndexes(s)
     val columnsMap = columns.map(c => c.index.get -> c).toMap
@@ -553,14 +553,17 @@ object Model2XlsxConversions {
   }
 
   //================= Adding validation for dropdown ====================
-  private def addValidation(dropDown: DropDown,s: XSSFSheet){
-    val helper : XSSFDataValidationHelper = new XSSFDataValidationHelper(s)
-    val constraint = helper.createExplicitListConstraint(dropDown.list.toArray)
-    val columnRange = dropDown.cellRange.columnRange
-    val rowRange = dropDown.cellRange.rowRange
-    val addressList = new CellRangeAddressList(rowRange._1, rowRange._2, columnRange._1, columnRange._2)
-    val validation: DataValidation = helper.createValidation(constraint,addressList)
-    validation.setShowErrorBox(true)
-    s.addValidationData(validation)
+  private def addValidation(dropDowns: List[DropDown],s: XSSFSheet){
+    val helper = new XSSFDataValidationHelper(s)
+
+    for (dropDown <- dropDowns){
+      val constraint = helper.createExplicitListConstraint(dropDown.list.toArray)
+      val columnRange = dropDown.cellRange.columnRange
+      val rowRange = dropDown.cellRange.rowRange
+      val addressList = new CellRangeAddressList(rowRange._1, rowRange._2, columnRange._1, columnRange._2)
+      val validation: DataValidation = helper.createValidation(constraint,addressList)
+      validation.setShowErrorBox(true)
+      s.addValidationData(validation)
+    }
   }
 }

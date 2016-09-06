@@ -19,7 +19,7 @@ object Sheet {
             style: CellStyle = null,
             password: String = null,
             tables: List[Table] = Nil,
-            dropDown: DropDown = null): Sheet =
+            dropDowns: List[DropDown] = Nil): Sheet =
     Sheet(
       name = Option(name),
       columns = columns,
@@ -36,7 +36,7 @@ object Sheet {
       style = Option(style),
       password = Option(password),
       tables = tables,
-      dropDown = Option(dropDown)
+      dropDowns = dropDowns
     )
 
   def apply(rows: Row*): Sheet = apply(rows = rows.toList)
@@ -61,7 +61,7 @@ case class Sheet private(
                           style: Option[CellStyle],
                           password: Option[String],
                           tables: List[Table],
-                          dropDown: Option[DropDown]) {
+                          dropDowns: List[DropDown]) {
 
   override def toString = "Sheet(" + List(
     name.map("name=" + _),
@@ -198,9 +198,10 @@ case class Sheet private(
   def withoutStyle =
     copy(style = None)
 
-  def withDropDown (dropDown: DropDown)=
-    copy(dropDown = Option(dropDown))
+  def withDropDowns (dropDowns: List[DropDown])=
+    copy(dropDowns = dropDowns)
 
-  def withoutDropDown =
-    copy(dropDown = None)
+  def withDropDowns (dropDowns: DropDown*)=
+    copy(dropDowns = dropDowns.toList)
+
 }
