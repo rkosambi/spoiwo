@@ -3,11 +3,12 @@ package com.norbitltd.spoiwo.natures.xlsx
 import java.io.FileOutputStream
 import java.util.{Calendar, Date}
 
-import com.norbitltd.spoiwo.model.{BooleanCell, CalendarCell, DateCell, FormulaCell, NoSplitOrFreeze, NumericCell, SplitPane, StringCell, _}
+import com.norbitltd.spoiwo.model._
 import com.norbitltd.spoiwo.model.enums._
 import com.norbitltd.spoiwo.natures.xlsx.Model2XlsxEnumConversions._
 import org.apache.poi.ss.usermodel
-import org.apache.poi.ss.util.CellRangeAddress
+import org.apache.poi.ss.usermodel.DataValidation
+import org.apache.poi.ss.util.{CellRangeAddressList, CellRangeAddress}
 import org.apache.poi.xssf.usermodel._
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.{CTTable, CTTableColumns, CTTableStyleInfo}
 import org.joda.time.{LocalDate, LocalDateTime}
@@ -259,6 +260,7 @@ object Model2XlsxConversions {
     validateTables(s)
     val sheetName = s.name.getOrElse("Sheet" + (workbook.getNumberOfSheets + 1))
     val sheet = workbook.createSheet(sheetName)
+    addValidation(s.dropDown.get, sheet)
     val columns = updateColumnsWithIndexes(s)
     val columnsMap = columns.map(c => c.index.get -> c).toMap
 
@@ -547,4 +549,15 @@ object Model2XlsxConversions {
     def convertAsXlsx() = convertWorkbook(workbook)
   }
 
+  //================= Adding validation for dropdown ====================
+  private def addValidation(dropDown: DropDown,s: XSSFSheet){
+    val helper : XSSFDataValidationHelper = new XSSFDataValidationHelper(s)
+    val constraint = helper.createExplicitListConstraint(dropDown.list.toArray)
+    val columnRange = dropDown.cellRange.columnRange
+    val rowRange = dropDown.cellRange.rowRange
+    val addressList = new CellRangeAddressList(rowRange._1, rowRange._2, columnRange._1, columnRange._2)
+    val validation: DataValidation = helper.createValidation(constraint,addressList)
+    validation.setShowErrorBox(true)
+    s.addValidationData(validation)
+  }
 }

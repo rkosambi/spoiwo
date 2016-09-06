@@ -18,7 +18,8 @@ object Sheet {
             repeatingColumns: ColumnRange = null,
             style: CellStyle = null,
             password: String = null,
-            tables: List[Table] = Nil): Sheet =
+            tables: List[Table] = Nil,
+            dropDown: DropDown = null): Sheet =
     Sheet(
       name = Option(name),
       columns = columns,
@@ -34,7 +35,8 @@ object Sheet {
       repeatingColumns = Option(repeatingColumns),
       style = Option(style),
       password = Option(password),
-      tables = tables
+      tables = tables,
+      dropDown = Option(dropDown)
     )
 
   def apply(rows: Row*): Sheet = apply(rows = rows.toList)
@@ -58,7 +60,8 @@ case class Sheet private(
                           repeatingColumns: Option[ColumnRange],
                           style: Option[CellStyle],
                           password: Option[String],
-                          tables: List[Table]) {
+                          tables: List[Table],
+                          dropDown: Option[DropDown]) {
 
   override def toString = "Sheet(" + List(
     name.map("name=" + _),
@@ -194,4 +197,10 @@ case class Sheet private(
 
   def withoutStyle =
     copy(style = None)
+
+  def withDropDown (dropDown: DropDown)=
+    copy(dropDown = Option(dropDown))
+
+  def withoutDropDown =
+    copy(dropDown = None)
 }

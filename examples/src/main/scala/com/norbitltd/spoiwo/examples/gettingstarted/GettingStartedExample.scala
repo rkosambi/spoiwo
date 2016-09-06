@@ -20,6 +20,9 @@ object GettingStartedExample {
     .withColumns(
       Column(index = 0, style = CellStyle(font = Font(bold = true)), autoSized = true)
     )
+    .withDropDown(
+      DropDown(List("11","12","13"), new CellRange((7,7),(1,1))
+    ))
 
   def main(args: Array[String]) {
     gettingStartedSheet.saveAsXlsx(Utils.returnOrAskForSaveLocation(args))

@@ -13,9 +13,9 @@ lazy val pomDetails = <url>https://github.com/norbert-radyk/spoiwo/</url>
   </scm>
   <developers>
     <developer>
-      <id>norbert-radyk</id>
-      <name>Norbert Radyk</name>
-      <email>norbert.radyk@gmail.com</email>
+      <id>rahul.kosambi</id>
+      <name>Rahul Kosambi</name>
+      <email>rahul.kosambi@flipkart.com</email>
     </developer>
   </developers>
 
@@ -24,13 +24,12 @@ lazy val commonSettings = Seq(
   scalaVersion := "2.11.8",
   publishMavenStyle := true,
   publishArtifact in Test := false,
-  useGpg := true,
   publishTo := {
-    val nexus = "https://oss.sonatype.org/"
+    val flipkart = "http://artifactory.nm.flipkart.com:8081/artifactory"
     if (isSnapshot.value)
-      Some("snapshots" at nexus + "content/repositories/snapshots")
+      Some("snapshots" at flipkart + "/libs-snapshot")
     else
-      Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+      Some("releases"  at flipkart + "/libs-snapshot")
   },
   pomExtra := pomDetails,
   libraryDependencies ++= Seq(
@@ -47,7 +46,7 @@ lazy val spoiwo = (project in file("."))
   .settings(commonSettings : _*)
   .settings(
     name := "spoiwo",
-    version := "1.1.0"
+    version := "1.2.0"
   )
 
 lazy val examples = (project in file("examples"))
@@ -55,5 +54,5 @@ lazy val examples = (project in file("examples"))
   .settings(commonSettings : _*)
   .settings(
     name := "spoiwo-examples",
-    version := "1.1.0"
+    version := "1.2.0"
   )
